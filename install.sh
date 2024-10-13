@@ -6,7 +6,7 @@ sudo apt-get -y install build-essential cmake ccache ninja-build cmake-curses-gu
     libxml2-utils ncurses-dev curl git doxygen device-tree-compiler u-boot-tools \
     python3-dev python3-pip python-is-python3 protobuf-compiler python3-protobuf \
     gcc-arm-linux-gnueabi g++-arm-linux-gnueabi gcc-aarch64-linux-gnu g++-aarch64-linux-gnu \
-    gcc-riscv64-linux-gnu g++-riscv64-linux-gnu gcc-riscv64-unknown-elf repo
+    gcc-riscv64-linux-gnu g++-riscv64-linux-gnu repo
 
 pip install --user setuptools sel4-deps aenum pyelftools grpcio_tools
     
@@ -34,6 +34,11 @@ rm -rf build
 ./configure --target-list=aarch64-softmmu,aarch64-linux-user
 make -j$(nproc)
 sudo make install
+
+# Download riscv unknown toolchain
+wget https://github.com/yfblock/rel4-docker/releases/download/toolchain/riscv.tar.gz
+tar xzvf riscv.tar.gz
+
 popd
 
 # sudo apt install -y ninja-build g++ python3-pip libxml2-utils protobuf-compiler \
@@ -47,11 +52,11 @@ popd
 # sudo tar xzvf riscv.tar.gz
 
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | bash -s -- -y --no-modify-path \
-    --default-toolchain nightly-2024-02-01 \
+    --default-toolchain nightly-2024-09-01 \
     --component rust-src cargo clippy rust-docs rust-src rust-std rustc rustfmt \
     --target aarch64-unknown-none-softfloat riscv64imac-unknown-none-elf
 
-echo "export PATH=\${PATH}:${HOME}/.local/bin" >> ${HOME}/.bashrc
+echo "export PATH=\${PATH}:${HOME}/.local/bin:${HOME}/Downloads/riscv/bin" >> ${HOME}/.bashrc
 echo "source \$HOME/.cargo/env" >> ${HOME}/.bashrc
 
 source ${HOME}/.bashrc
